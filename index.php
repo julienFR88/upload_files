@@ -24,23 +24,19 @@ if (isset($_FILES['file'])) {
         $uniqueName = uniqid('', true);
 
         // on va concaténer notre uniqid avec l'xtension
-        $file = $uniqueName . "" . "" . $extension;
+        $file = $uniqueName . "." . $extension;
 
         move_uploaded_file($tmpName, './upload/' . $file);
 
-        // connexion à la db en PDO
-        try {
-            $db = new PDO('mysql:host=localhost;dbname=upload_file', 'root', '');
-        } catch (PDOException $e) {
-            die('error de connexion' . $e->getMessage());
-        }
+        include('db.php');
 
         $req = $db->prepare('INSERT INTO file(name) VALUES (?)');
-        $req->execute($file);
+        $req->execute([$file]);
+
         echo 'Image enregistrée';
 
     } else {
-      echo 'Une erreur est apparu pendant le chargement de votre image'
+    echo 'Une erreur est apparu pendant le chargement de votre image';
     }
 
 }
